@@ -1,35 +1,36 @@
-# Spring Framework JSP Application
+# Spring Boot Thymeleaf Application
 
-A Spring Framework 6.x web application using JSP, MyBatis, and PostgreSQL.
+A Spring Boot 3.x web application using Thymeleaf, MyBatis, and PostgreSQL.
 
 ## Tech Stack
 
-- **Framework**: Spring Framework 6.1.14 (Spring MVC, Spring JDBC)
-- **Server**: Apache Tomcat 11 (JDK 21)
-- **Database**: PostgreSQL
+- **Framework**: Spring Boot 3.5.7 (Spring MVC, Spring JDBC)
+- **Server**: Embedded Tomcat (Spring Boot)
+- **Database**: PostgreSQL 18
 - **Build**: Gradle 9.2.0
-- **View**: JSP with JSTL
+- **View**: Thymeleaf
+- **ORM**: MyBatis 3.0.3
 
 ## Getting Started
 
 ### Prerequisites
 
 - JDK 21
-- Docker & Docker Compose
+- Docker & Docker Compose (for PostgreSQL)
 - Gradle 9.2.0 (or use included gradlew)
 
-### Development Mode (with Hot Reloading)
+### Quick Start
 
-1. Start the exploded WAR builder in continuous mode (Terminal 1):
-
-```bash
-./gradlew explodeWar --continuous
-```
-
-2. Start Docker containers (Terminal 2):
+1. Start PostgreSQL database:
 
 ```bash
 docker-compose up -d
+```
+
+2. Run the application:
+
+```bash
+./gradlew bootRun
 ```
 
 3. Access the application:
@@ -37,38 +38,93 @@ docker-compose up -d
 http://localhost:8080
 ```
 
+### Development Mode
+
+Spring Boot DevTools is included for automatic restart and live reload:
+
+- Code changes automatically trigger application restart
+- Template changes (Thymeleaf) are hot-reloaded without restart
+- Static resources are served with cache disabled
+
+Simply edit your code and refresh the browser!
+
 ### Production Build
 
-Build and deploy the WAR file:
+Build the executable JAR:
 
 ```bash
-./gradlew buildAndDeploy
-docker-compose up -d
+./gradlew build
 ```
+
+Run the JAR file:
+
+```bash
+java -jar build/libs/spring-boot-thymeleaf-1.0.0.jar
+```
+
+Or build a WAR file for deployment:
+
+```bash
+./gradlew war
+```
+
+The WAR file will be generated at `build/libs/app.war`
 
 ## Available Gradle Tasks
 
-- `./gradlew explodeWar` - Explode WAR to build/exploded for hot reloading
-- `./gradlew explodeWar --continuous` - Continuous build mode (auto-rebuild on changes)
-- `./gradlew deployWar` - Deploy WAR file to target directory
-- `./gradlew buildAndDeploy` - Clean, build, and deploy in one command
+- `./gradlew bootRun` - Run the Spring Boot application
+- `./gradlew build` - Build the project and create JAR file
+- `./gradlew war` - Build WAR file for external Tomcat deployment
+- `./gradlew clean` - Clean build directory
+- `./gradlew test` - Run tests
 
 ## Docker Services
 
-- **Tomcat**: http://localhost:8080
 - **PostgreSQL**: localhost:5432
   - Database: `spring-framework-db`
   - User: `user`
   - Password: `password`
 
+## Project Structure
+
+```
+src/
+├── main/
+│   ├── java/com/example/
+│   │   ├── controller/     # Spring MVC Controllers
+│   │   ├── service/        # Business Logic
+│   │   ├── mapper/         # MyBatis Mappers
+│   │   ├── model/          # Domain Models
+│   │   └── config/         # Spring Configuration
+│   └── resources/
+│       ├── templates/      # Thymeleaf Templates
+│       ├── mappers/        # MyBatis XML Mappers
+│       └── application.yml # Application Configuration
+```
+
+## Configuration
+
+Application configuration is in `src/main/resources/application.yml`:
+
+- Database connection (can be overridden with environment variables)
+- Thymeleaf settings (cache disabled for development)
+- MyBatis configuration
+- Server port (default: 8080)
+
 ## Development Notes
 
-- The application uses exploded WAR deployment for hot reloading during development
-- Tomcat is configured with `reloadable="true"` for automatic class reloading
-- Database connection settings are configured via environment variables in docker-compose.yml
+- Spring Boot DevTools provides automatic restart on code changes
+- Thymeleaf cache is disabled in development for hot reload
+- Database connection settings can be overridden via environment variables:
+  - `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`
 - Init scripts in `init-scripts/` directory are automatically executed on PostgreSQL startup
+- Templates are located in `src/main/resources/templates/`
 
 ## Stopping the Application
+
+Stop the Spring Boot application: `Ctrl+C`
+
+Stop the database:
 
 ```bash
 docker-compose down
