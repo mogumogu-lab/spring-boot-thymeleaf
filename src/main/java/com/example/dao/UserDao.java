@@ -2,7 +2,6 @@ package com.example.dao;
 
 import com.example.model.User;
 import org.mybatis.spring.SqlSessionTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,7 +14,6 @@ public class UserDao {
 
     private final SqlSessionTemplate sqlSession;
 
-    @Autowired
     public UserDao(SqlSessionTemplate sqlSession) {
         this.sqlSession = sqlSession;
     }
